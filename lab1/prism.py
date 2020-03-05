@@ -26,22 +26,46 @@ class InclinedTriangularPrism:
                         [self.c[0] + 1.7, self.c[1] + 4]
                     ])
         self.color = color
+    
+    def set_center(self, center):
+        self.c = center
+        self.points = np.array([
+                        [self.c[0],       self.c[1]    ], 
+                        [self.c[0] + 1,   self.c[1]    ], 
+                        [self.c[0] + 0.7, self.c[1] + 1], 
+                        [self.c[0] + 1,   self.c[1] + 3], 
+                        [self.c[0] + 2,   self.c[1] + 3], 
+                        [self.c[0] + 1.7, self.c[1] + 4]
+                    ])
+
+    def get_borders(self):
+        return {
+            'top': self.points[5][1],
+            'bottom': self.points[0][1],
+            'right': self.points[4][0],
+            'left': self.points[0][0],
+        }
+    
+    def move(self, direct_coords, speed=1):
+        for i in range(len(self.points)):
+            self.points[i][0] += direct_coords[0]*speed
+            self.points[i][1] += direct_coords[1]*speed
 
     def draw(self):
         lines = []
 
         p = self.points
-        lines.append(plt.plot([p[0][0], p[1][0]], [p[0][1], p[1][1]], marker='o', linestyle='-', color=self.color))
-        lines.append(plt.plot([p[1][0], p[2][0]], [p[1][1], p[2][1]], marker='o', linestyle='--', color=self.color))
-        lines.append(plt.plot([p[2][0], p[0][0]], [p[2][1], p[0][1]], marker='o', linestyle='--', color=self.color))
+        lines.append(plt.plot([p[0][0], p[1][0]], [p[0][1], p[1][1]], marker='o', linestyle='-', color=self.color)[0])
+        lines.append(plt.plot([p[1][0], p[2][0]], [p[1][1], p[2][1]], marker='o', linestyle='--', color=self.color)[0])
+        lines.append(plt.plot([p[2][0], p[0][0]], [p[2][1], p[0][1]], marker='o', linestyle='--', color=self.color)[0])
 
-        lines.append(plt.plot([p[3][0], p[4][0]], [p[3][1], p[4][1]], marker='o', linestyle='-', color=self.color))
-        lines.append(plt.plot([p[4][0], p[5][0]], [p[4][1], p[5][1]], marker='o', linestyle='-', color=self.color))
-        lines.append(plt.plot([p[5][0], p[3][0]], [p[5][1], p[3][1]], marker='o', linestyle='-', color=self.color))
+        lines.append(plt.plot([p[3][0], p[4][0]], [p[3][1], p[4][1]], marker='o', linestyle='-', color=self.color)[0])
+        lines.append(plt.plot([p[4][0], p[5][0]], [p[4][1], p[5][1]], marker='o', linestyle='-', color=self.color)[0])
+        lines.append(plt.plot([p[5][0], p[3][0]], [p[5][1], p[3][1]], marker='o', linestyle='-', color=self.color)[0])
 
-        lines.append(plt.plot([p[0][0], p[3][0]], [p[0][1], p[3][1]], marker='o', linestyle='-', color=self.color))
-        lines.append(plt.plot([p[1][0], p[4][0]], [p[1][1], p[4][1]], marker='o', linestyle='-', color=self.color))
-        lines.append(plt.plot([p[2][0], p[5][0]], [p[2][1], p[5][1]], marker='o', linestyle='--', color=self.color))
+        lines.append(plt.plot([p[0][0], p[3][0]], [p[0][1], p[3][1]], marker='o', linestyle='-', color=self.color)[0])
+        lines.append(plt.plot([p[1][0], p[4][0]], [p[1][1], p[4][1]], marker='o', linestyle='-', color=self.color)[0])
+        lines.append(plt.plot([p[2][0], p[5][0]], [p[2][1], p[5][1]], marker='o', linestyle='--', color=self.color)[0])
 
         return lines
     

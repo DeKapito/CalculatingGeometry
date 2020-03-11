@@ -18,25 +18,20 @@ class InclinedTriangularPrism:
     def __init__(self, center, color):
         self.c = center
         self.points = np.array([
-                        [self.c[0],       self.c[1]    ], 
-                        [self.c[0] + 1,   self.c[1]    ], 
-                        [self.c[0] + 0.7, self.c[1] + 1], 
-                        [self.c[0] + 1,   self.c[1] + 3], 
-                        [self.c[0] + 2,   self.c[1] + 3], 
-                        [self.c[0] + 1.7, self.c[1] + 4]
+                        [self.c[0] - 1,   self.c[1] - 2], 
+                        [self.c[0],       self.c[1] - 2], 
+                        [self.c[0] - 0.3, self.c[1] - 1], 
+                        [self.c[0],       self.c[1] + 1], 
+                        [self.c[0] + 1,   self.c[1] + 1], 
+                        [self.c[0] + 0.7, self.c[1] + 2]
                     ])
         self.color = color
     
     def set_center(self, center):
+        x_diff = center[0] - self.c[0]
+        y_diff = center[1] - self.c[1]
         self.c = center
-        self.points = np.array([
-                        [self.c[0],       self.c[1]    ], 
-                        [self.c[0] + 1,   self.c[1]    ], 
-                        [self.c[0] + 0.7, self.c[1] + 1], 
-                        [self.c[0] + 1,   self.c[1] + 3], 
-                        [self.c[0] + 2,   self.c[1] + 3], 
-                        [self.c[0] + 1.7, self.c[1] + 4]
-                    ])
+        self.move((x_diff, y_diff))
 
     def get_borders(self):
         return {
@@ -75,10 +70,20 @@ class InclinedTriangularPrism:
              [-1, 0]])
     
     def scale(self, size):
+        temp_center = self.c
+        self.points = np.array([
+                        [self.c[0] - 1,   self.c[1] - 2], 
+                        [self.c[0],       self.c[1] - 2], 
+                        [self.c[0] - 0.3, self.c[1] - 1], 
+                        [self.c[0],       self.c[1] + 1], 
+                        [self.c[0] + 1,   self.c[1] + 1], 
+                        [self.c[0] + 0.7, self.c[1] + 2]
+                    ])
         self.points = self.points.dot(
             [[size, 0],
              [0, size]]
         )
+        self.set_center(temp_center)
 
     @staticmethod
     def draw_rand_figures(count):

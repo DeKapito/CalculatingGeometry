@@ -8,12 +8,12 @@ class InclinedTriangularPrism:
     def __init__(self, center):
         c = center
         self.points = np.array([
-                        [c[0],       c[1]    ], 
-                        [c[0] + 1,   c[1]    ], 
-                        [c[0] + 0.7, c[1] + 1], 
-                        [c[0] + 1,   c[1] + 3], 
-                        [c[0] + 2,   c[1] + 3], 
-                        [c[0] + 1.7, c[1] + 4]
+                        [c[0] - 1,   c[1] - 2], 
+                        [c[0],       c[1] - 2], 
+                        [c[0] - 0.3, c[1] - 1], 
+                        [c[0],       c[1] + 1], 
+                        [c[0] + 1,   c[1] + 1], 
+                        [c[0] + 0.7, c[1] + 2]
                     ])
 
     def draw(self):
@@ -46,7 +46,8 @@ if __name__ == '__main__':
     #     plt.plot(*zip(*(points + points[:1])), marker='o')
 
     prism = InclinedTriangularPrism((0, 0))
-    prism.draw_rand_figures(50)
+    prism.draw()
+    #prism.draw_rand_figures(50)
 
     plt.xlim(-20, 20)
     plt.ylim(-20, 20)

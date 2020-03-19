@@ -12,7 +12,7 @@ if __name__ == '__main__':
     plt.xlim(-40, 40)
     plt.ylim(-40, 40)
 
-    for i in range(5, 2, -1):
+    for i in range(15, 8, -2):
         prism = InclinedTriangularPrism((0, 0), 'green')
         prism.scale(i)
         prism.draw()

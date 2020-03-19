@@ -6,6 +6,13 @@ import random
 from matplotlib.animation import FuncAnimation
 from prism import InclinedTriangularPrism
 
+def scale(self, size):
+        self.points = self.points.dot(
+            [[size, 0],
+             [0, size]]
+        )
+
+setattr(InclinedTriangularPrism, 'scale', scale)
 
 class AnimatedPrism:
 
@@ -19,10 +26,8 @@ class AnimatedPrism:
     }
 
     def __init__(self):
-        self.scale = 2
-
         self.prism = InclinedTriangularPrism((0, 0), 'red')
-        self.prism.scale(self.scale)
+        self.prism.scale(2)
 
         self.fig = plt.figure(figsize=(9, 9))
         self.speed = 4
@@ -60,14 +65,14 @@ class AnimatedPrism:
     
     def x_y_move(self, i):
         if self.direction == 'up_right':
-            self.prism.scale(1.1)
+            self.prism.scale(1.06)
         else:
-            self.prism.scale(0.9)
+            self.prism.scale(0.94)
         self.move(self.direction)
 
         if self.prism.get_borders()['top'] >= self.max_limit - 5:
             self.direction = 'down_left'
-        elif self.prism.get_borders()['bottom'] <= self.min_limit + 5:
+        elif self.prism.get_borders()['bottom'] < self.min_limit + 5:
             self.direction = 'up_right'
         
         return self.prism.draw()
@@ -88,5 +93,7 @@ class AnimatedPrism:
 
 if __name__ == '__main__':
     anim_prism = AnimatedPrism()
+    # animation = anim_prism.animate_x()
+    # animation = anim_prism.animate_y()
     animation = anim_prism.animate_x_y()
     plt.show()

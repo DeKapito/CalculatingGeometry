@@ -88,10 +88,18 @@ class InclinedTriangularPrism:
     @staticmethod
     def draw_rand_figures(count):
         for i in range(count):
-            center = random.randint(-10, 10), random.randint(-10, 10)
-            prism = InclinedTriangularPrism(
-                center, 
-                color=InclinedTriangularPrism.COLORS[random.randint(0, len(InclinedTriangularPrism.COLORS) - 1)]
-                )
-            prism.scale(random.randint(1, 5))
-            prism.draw()
+            while True:
+                center = random.randint(-10, 10), random.randint(-10, 10)
+                prism = InclinedTriangularPrism(
+                    center, 
+                    color=InclinedTriangularPrism.COLORS[random.randint(0, len(InclinedTriangularPrism.COLORS) - 1)]
+                    )
+                prism.scale(random.randint(1, 5))
+                borders = prism.get_borders()
+                if borders['top'] >= 40         \
+                    or borders['bottom'] <= -40 \
+                    or borders['right'] >= 40   \
+                    or borders['left'] <= -40:
+                    continue
+                prism.draw()
+                break

@@ -11,7 +11,7 @@ from matplotlib.patches import Ellipse
 
 class ElipseAnimatedPrism:
     def __init__(self):
-        self.scale = 1
+        self.scale = 2
 
         self.prism = InclinedTriangularPrism((0, 0), 'red')
         self.prism.scale(self.scale)
@@ -34,9 +34,9 @@ class ElipseAnimatedPrism:
         new_y = 5 * math.sin(i*self.speed)
 
         if new_y > self.y:
-            self.scale_counter -= 0.1
+            self.scale_counter -= 0.15
         elif new_y < self.y:
-            self.scale_counter += 0.1
+            self.scale_counter += 0.15
 
         self.x = new_x
         self.y = new_y
@@ -48,7 +48,7 @@ class ElipseAnimatedPrism:
 
 if __name__ == '__main__':
     anim_prism = ElipseAnimatedPrism()
-    ellipse = Ellipse((0, -5), width=20, height=10)
+    ellipse = Ellipse((0, -5), width=30, height=20)
     ax = plt.gca()
     ax.add_patch(ellipse)
     animation = anim_prism.animate_circle()

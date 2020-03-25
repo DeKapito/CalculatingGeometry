@@ -63,7 +63,9 @@ class Prism:
         self.canvas.create_line(
             x1+w, h-y1, 
             x2+w, h-y2, 
-            fill=self.fg_color)
+            fill=self.fg_color,
+            dash=(20, 40)
+            )
 
     def draw_shapes_prism(self):
         w = self.canvas.winfo_width() / 2
@@ -91,16 +93,14 @@ class Prism:
             for point in shape[0]:
                 points.append(point[0])
                 points.append(point[1])
-            self.canvas.create_polygon(points, outline='red', fill='yellow', width=2)
+            self.canvas.create_polygon(points, outline='red', fill='white', width=2)
 
     def draw_cascade_prism(self):
-        self.canvas.delete(ALL)
-        
         w = self.canvas.winfo_width() / 2
         h = self.canvas.winfo_height() / 2
         if h < 1 and w < 1:
             h, w = 200, 200
-        self.canvas.delete(ALL)
+        # self.canvas.delete(ALL)
 
         for line in self.prism_lines:
             self.draw_line(
@@ -137,6 +137,7 @@ class Prism:
         # self.prism = self.rotate_along_y(0.03, self.prism)
         self.prism = self.rotate_along_z(0.03, self.prism)
         self.draw_shapes_prism()
+        self.draw_cascade_prism()
         self.root.after(15, self.continually_rotate)
 
     def on_mouse_clicked(self, event):
@@ -149,6 +150,7 @@ class Prism:
         dy = self.last_x - event.x
         self.prism = self.rotate_along_y(dy * 0.01, self.prism)
         self.draw_shapes_prism()
+        self.draw_cascade_prism()
         self.on_mouse_clicked(event)
 
 

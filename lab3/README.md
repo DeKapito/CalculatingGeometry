@@ -13,14 +13,14 @@
 
 ```python
 angle_step = 2 * math.pi / self.num_vertexes
-    vertexes = []
-    for height, radius in zip(self.heights, self.radiuses):
-        for i in range(0, self.num_vertexes):
-            vertex = Vertex()
-            vertex.x = math.cos(i * angle_step) * radius
-            vertex.y = math.sin(i * angle_step) * radius
-            vertex.z = height
-            vertexes.append(vertex)
+vertexes = []
+for height, radius in zip(self.heights, self.radiuses):
+    for i in range(0, self.num_vertexes):
+        vertex = Vertex()
+        vertex.x = math.cos(i * angle_step) * radius
+        vertex.y = math.sin(i * angle_step) * radius
+        vertex.z = height
+        vertexes.append(vertex)
 ```
 Фрагмент коду малювання каркасу (кожен шар з'єднується з наступним):
 

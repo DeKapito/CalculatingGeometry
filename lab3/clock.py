@@ -8,10 +8,11 @@ import itertools as it
 
 
 class Vertex:
-    def __init__(self, x=0, y=0, z=0):
+    def __init__(self, x=0, y=0, z=0, m=1):
         self.x = x
         self.y = y
         self.z = z
+        self.m = m
 
 
 class Prism:
@@ -21,8 +22,11 @@ class Prism:
         self.root = root
         self.init_data()
         self.create_canvas()
-        self.draw_clock()
-        self.draw_dimetric_projection()
+        # self.draw_xoy_clock()
+        # self.draw_xoz_clock()
+        # self.draw_yoz_clock()
+        # self.draw_clock()
+        self.draw_dimetric_clock()
         self.bind_mouse_buttons()
 
     def init_data(self):
@@ -41,7 +45,7 @@ class Prism:
                 vertex.z = height
                 vertexes.append(vertex)
 
-        self.points = np.array([[v.x, v.y, v.z] for v in vertexes]).transpose()
+        self.points = np.array([[v.x, v.y, v.z, v.m] for v in vertexes]).transpose()
 
     def create_canvas(self):
         self.canvas = Canvas(
@@ -64,30 +68,16 @@ class Prism:
             ) 
 
     def draw_clock(self):
-        self.canvas.delete(ALL)
-        colors = it.cycle(['red', 'blue', 'black', 'green'])
-        color = next(colors)
-        for i in range(1, len(self.points[0])+1):     
-            source = i - 1
-            target = i
-            if i % self.num_vertexes == 0:
-                target = i - self.num_vertexes
-            self.draw_line(
-                self.points[0][source], self.points[1][source],
-                self.points[0][target], self.points[1][target],
-                color=color
-            )
-            if i < len(self.points[0]) - self.num_vertexes:
-                self.draw_line(
-                    self.points[0][source], self.points[1][source],
-                    self.points[0][source+self.num_vertexes], self.points[1][source+self.num_vertexes],
-                    color=color
-                )
-            if i % self.num_vertexes == 0:
-                color = next(colors)
+        self.draw(self.points)
     
     def draw(self, points):
         self.canvas.delete(ALL)
+
+        for i in range(len(points[0])):
+            points[0][i] /= points[3][i]
+            points[1][i] /= points[3][i]
+            points[2][i] /= points[3][i]
+
         colors = it.cycle(['red', 'blue', 'black', 'green'])
         color = next(colors)
         for i in range(1, len(points[0])+1):     
@@ -109,40 +99,79 @@ class Prism:
             if i % self.num_vertexes == 0:
                 color = next(colors)
 
-    def draw_dimetric_projection(self):
+    def draw_dimetric_clock(self):
         psi = 0.4
-        fi = 0.4
+        fi = 0.5
 
         dimetric_matrix = np.array([
-            [cos(psi), sin(fi)*sin(psi),    0], 
-            [0,        cos(psi),            0], 
-            [sin(psi), -sin(psi)*cos(psi),  0],
+            [cos(psi), sin(fi)*sin(psi),    0, 0], 
+            [0,        cos(psi),            0, 0], 
+            [sin(psi), -sin(psi)*cos(psi),  0, 0],
+            [0,        0,                   0, 1],
         ])
         
         points = np.dot(dimetric_matrix, self.points)
         self.draw(points)
+    
+    def draw_xoy_clock(self):
+        xoy_matrix = np.array([
+            [1, 0, 0, 0], 
+            [0, 1, 0, 0], 
+            [0, 0, 0, 0],
+            [0, 0, 0, 1]
+        ])
+
+        points = np.dot(xoy_matrix, self.points)
+        self.draw(points)
+    
+    def draw_xoz_clock(self):
+        xoy_matrix = np.array([
+            [1, 0, 0, 0], 
+            [0, 0, 0, 0], 
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+        ])
+
+        points = np.dot(xoy_matrix, self.points)
+        points = self.rotate_along_x(90, points)
+        self.draw(points)
+    
+    def draw_yoz_clock(self):
+        xoy_matrix = np.array([
+            [1, 0, 0, 0], 
+            [0, 0, 0, 0], 
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+        ])
+        points = np.dot(xoy_matrix, self.points)
+        
+        points = self.rotate_along_x(90, points)
+        self.draw(points)
 
     def rotate_along_x(self, x, figure):
         rotate_x_matrix = np.array([
-            [1,    0,       0     ], 
-            [0,    cos(x), -sin(x)], 
-            [0,    sin(x),  cos(x)],
+            [1,    0,       0,      0], 
+            [0,    cos(x),  sin(x), 0], 
+            [0,    -sin(x), cos(x), 0],
+            [0,    0,       0,      1],
         ])
         return np.dot(rotate_x_matrix, figure)
 
     def rotate_along_y(self, y, figure):
         rotate_y_matrix = np.array([
-            [cos(y),  0,   sin(y)], 
-            [0,       1,   0     ], 
-            [-sin(y), 0,   cos(y)],
+            [cos(y),  0,   -sin(y), 0], 
+            [0,       1,   0,       0], 
+            [sin(y),  0,   cos(y),  0],
+            [0,       0,   0,       1]
         ])
         return np.dot(rotate_y_matrix, figure)
     
     def rotate_along_z(self, z, figure):
         rotate_z_matrix = np.array([
-            [cos(z),  sin(z), 0], 
-            [-sin(z), cos(z), 0], 
-            [0,       0,      1],
+            [cos(z),  sin(z), 0, 0], 
+            [-sin(z), cos(z), 0, 0], 
+            [0,       0,      1, 0],
+            [0,       0,      0, 1],
         ])
         return np.dot(rotate_z_matrix, figure)
 
@@ -155,7 +184,7 @@ class Prism:
         self.points = self.rotate_along_x(-dx * 0.01, self.points)
         dy = self.last_x - event.x
         self.points = self.rotate_along_y(dy * 0.01, self.points)
-        self.draw_dimetric_projection()
+        self.draw_clock()
         self.on_mouse_clicked(event)
 
 

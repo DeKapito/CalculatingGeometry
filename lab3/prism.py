@@ -21,7 +21,8 @@ class Prism:
         self.root = root
         self.init_data()
         self.create_canvas()
-        self.draw_cascade_prism()
+        self.draw_clock()
+        self.draw_dimetric_projection()
         self.bind_mouse_buttons()
 
     def init_data(self):
@@ -62,7 +63,7 @@ class Prism:
             fill=color
             ) 
 
-    def draw_cascade_prism(self):
+    def draw_clock(self):
         self.canvas.delete(ALL)
         colors = it.cycle(['red', 'blue', 'black', 'green'])
         color = next(colors)
@@ -84,7 +85,42 @@ class Prism:
                 )
             if i % self.num_vertexes == 0:
                 color = next(colors)
+    
+    def draw(self, points):
+        self.canvas.delete(ALL)
+        colors = it.cycle(['red', 'blue', 'black', 'green'])
+        color = next(colors)
+        for i in range(1, len(points[0])+1):     
+            source = i - 1
+            target = i
+            if i % self.num_vertexes == 0:
+                target = i - self.num_vertexes
+            self.draw_line(
+                points[0][source], points[1][source],
+                points[0][target], points[1][target],
+                color=color
+            )
+            if i < len(points[0]) - self.num_vertexes:
+                self.draw_line(
+                    points[0][source], points[1][source],
+                    points[0][source+self.num_vertexes], points[1][source+self.num_vertexes],
+                    color=color
+                )
+            if i % self.num_vertexes == 0:
+                color = next(colors)
 
+    def draw_dimetric_projection(self):
+        psi = 0.4
+        fi = 0.4
+
+        dimetric_matrix = np.array([
+            [cos(psi), sin(fi)*sin(psi),    0], 
+            [0,        cos(psi),            0], 
+            [sin(psi), -sin(psi)*cos(psi),  0],
+        ])
+        
+        points = np.dot(dimetric_matrix, self.points)
+        self.draw(points)
 
     def rotate_along_x(self, x, figure):
         rotate_x_matrix = np.array([
@@ -119,7 +155,7 @@ class Prism:
         self.points = self.rotate_along_x(-dx * 0.01, self.points)
         dy = self.last_x - event.x
         self.points = self.rotate_along_y(dy * 0.01, self.points)
-        self.draw_cascade_prism()
+        self.draw_dimetric_projection()
         self.on_mouse_clicked(event)
 
 
